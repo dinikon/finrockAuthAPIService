@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: finrock-auth-api-container
-        image: ghcr.io/dinikon/finrock-auth-api-dev:v0.0.4  # Замените на имя вашего Docker-образа
+        image: ghcr.io/dinikon/finrock-auth-api-dev:v0.0.5  # Замените на имя вашего Docker-образа
         ports:
         - containerPort: 8000
         env:
@@ -26,6 +26,11 @@ spec:
               secretKeyRef:
                 name: finrock-auth-api-secret
                 key: bot-token
+          - name: AUTH-APP__DB__URL
+            valueFrom:
+              secretKeyRef:
+                name: finrock-auth-api-secret
+                key: db-url
         volumeMounts:
         - name: fastapi-storage
           mountPath: /fastapi
