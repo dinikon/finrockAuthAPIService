@@ -7,7 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 from core.config import settings
 
 from api import auth
-from database.config import db_helper
+from core.database import db_helper
 
 
 @asynccontextmanager
