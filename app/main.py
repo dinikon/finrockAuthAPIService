@@ -11,7 +11,6 @@ from schemas.auth import TelegramAuthData
 app = FastAPI()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-print(os.getenv("BOT_TOKEN"))
 
 
 def validate_telegram_auth(data: dict, bot_token: str) -> bool:
