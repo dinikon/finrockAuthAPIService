@@ -1,43 +1,26 @@
-import uvicorn
-from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
 
-from api import auth
+import os
+
+import uvicorn
+from fastapi import FastAPI, HTTPException
+import hashlib
+import hmac
+
+from schemas.auth import TelegramAuthData
 
 app = FastAPI()
 app.include_router(auth.router, prefix="/api")
 
-origins = [
-    "http://localhost:5173",
-]
-
-methods = [
-    "DELETE",
-    "GET",
-    "POST",
-    "PUT",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=methods,
-    allow_headers=["*"],
-)
+BOT_TOKEN = os.getenv("BOT_TOKEN", "6743079497:AAE1ZY9QPKiDnZxufcoipXxVVWNQ-vTAPEQ")
 
 
-# @app.on_event("startup")
-# async def startup():
-#     await database.connect()
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Base.metadata.create_all)
-#
-#
-# @app.on_event("shutdown")
-# async def shutdown():
-#     if database.is_connected:
-#         await database.disconnect()
+@app.post("/auth/login")
+async def auth(data: TelegramAuthData):
+    data_dict = data.dict()
+    if validate_telegram_auth(data_dict, BOT_TOKEN):
+        return {"status": "success", "message": "User authenticated successfully!"}
+    else:
+        raise HTTPException(status_code=403, detail="Invalid data!")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="debug", reload=True)
