@@ -1,0 +1,52 @@
+# Default values for .helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+name: asvioapi
+appLabel: asvioapi
+containerName: asvioapi-container
+appHost: asvioapi.inikon.com.ua
+
+# Type issuer ["letsencrypt-prod", "letsencrypt-staging"]
+issuerType: "letsencrypt-prod"
+
+replications:
+  replicaCount: 2
+  minReplicasHPA: 1
+  maxReplicasHPA: 20
+
+#data base credintial ["prod", "dev"]
+database: prod
+
+containerBackPort: 8000
+exposePort: 8080
+
+image:
+  repository: ghcr.io/dinikon/asvio-crm-api
+  tag: latest
+
+resources:
+  presetOne:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1024Mi"
+      cpu: "500m"
+  presetTwo:
+    requests:
+      memory: "256Mi"
+      cpu: "50m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+config:
+  # Bool значения указывать "True"
+  debug: "False"
+  allowedHost: "asvioapi.inikon.com.ua"
+  corsAllowedOrigins: "https://asvio.inikon.com.ua"
+  corsAllowHeaders: "accept, authorization, content-type, user-agent, x-csrftoken, x-requested-with, x-project-guid"
+  corsTrustedOrigins: "https://asvioapi.inikon.com.ua, https://asvio.inikon.com.ua"
+  accessTokenLifetime: 5
+  refreshTokenLifetime: 512

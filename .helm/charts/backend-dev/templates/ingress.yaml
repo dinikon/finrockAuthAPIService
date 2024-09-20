@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-ingress
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: {{ .Values.issuerType }}
+spec:
+  rules:
+  - host: {{ .Values.appHost }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.name }}-service
+            port:
+              number: {{ .Values.exposePort }}
+
+  tls:
+  - hosts:
+    - {{ .Values.appHost }}
+    secretName: {{ .Values.appHost }}-django

@@ -1,0 +1,76 @@
+name: Docker Build, Publish and Deploy to prod
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  Build:
+    name: Build image & push repo
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Image Tag
+        id: set-image-tag
+        run: |
+          echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+
+      - name: Log in to GitHub Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/finrock-auth-api:${{ env.IMAGE_TAG }} -f docker/base/Dockerfile .
+
+      - name: Tag Docker Image as latest
+        run: docker tag ghcr.io/${{ github.repository_owner }}/finrock-auth-api:${{ env.IMAGE_TAG }} ghcr.io/${{ github.repository_owner }}/finrock-auth-api:latest
+
+      - name: Publish Docker Image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/finrock-auth-api:${{ env.IMAGE_TAG }}
+          docker push ghcr.io/${{ github.repository_owner }}/finrock-auth-api:latest
+
+#  Deploy:
+#    name: Deploy to k3s Cluster
+#    needs: Build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#          submodules: 'recursive'
+#
+#      - name: Set up Kubeconfig
+#        uses: azure/setup-kubectl@v1
+#        with:
+#          version: 'latest'
+#
+#      - name: Configure K3s Cluster Access
+#        run: |
+#          echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yml
+#          echo "KUBECONFIG=$(pwd)/kubeconfig.yml" >> $GITHUB_ENV
+#
+#      - name: Set up Helm
+#        uses: azure/setup-helm@v1
+#        with:
+#          version: 'v3.14.0'
+#
+#      - name: Set Image Tag
+#        id: set-image-tag
+#        run: |
+#          echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+#
+#      - name: Deploy Helm chart
+#        run: |
+#          helm upgrade --install asvio-api .helm --set backend-prod.image.tag=${{ env.IMAGE_TAG }}
