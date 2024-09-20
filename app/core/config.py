@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 from pydantic import PostgresDsn
-from pydantic.v1 import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class RunConfig(BaseModel):
-    host: str = "127.0.0.0"
+    host: str = "127.0.0.1"
     port: int = 8000
 
 
@@ -21,6 +21,12 @@ class DatabaseConfig(BaseModel):
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        env_nested_delimiter="__",
+        env_prefix="AUTH-APP__",
+    )
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig

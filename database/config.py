@@ -20,6 +20,7 @@ class DatabaseHelper:
             pool_size=pool_size,
             max_overflow=max_overflow
         )
+
         self.session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
             bind=self.engine,
             autoflush=False,
