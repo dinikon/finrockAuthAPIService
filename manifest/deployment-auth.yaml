@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: finrock-auth-api-container
-        image: ghcr.io/dinikon/finrock-auth-api-dev:v0.0.3  # Замените на имя вашего Docker-образа
+        image: ghcr.io/dinikon/finrock-auth-api-dev:v0.0.4  # Замените на имя вашего Docker-образа
         ports:
         - containerPort: 8000
         env:

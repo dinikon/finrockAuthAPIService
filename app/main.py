@@ -1,16 +1,16 @@
 import os
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Request
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
 import hashlib
 import hmac
 
 from schemas.auth import TelegramAuthData
 
 app = FastAPI()
+app.include_router(auth.router, prefix="/api")
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "6743079497:AAE1ZY9QPKiDnZxufcoipXxVVWNQ-vTAPEQ")
 
 
 def validate_telegram_auth(data: dict, bot_token: str) -> bool:
