@@ -33,7 +33,7 @@ def validate_telegram_auth(data: dict, bot_token: str) -> bool:
 @app.post("/auth/login")
 async def auth(data: TelegramAuthData):
     data_dict = data.dict()
-    if validate_telegram_auth(data_dict, TOKEN_BOT):
+    if validate_telegram_auth(data_dict, BOT_TOKEN):
         return {"status": "success", "message": "User authenticated successfully!"}
     else:
         raise HTTPException(status_code=403, detail="Invalid data!")
