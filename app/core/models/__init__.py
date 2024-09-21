@@ -1,8 +1,4 @@
-__all__ = (
-    "db_helper",
-    "Base",
-    "TelegramClient"
-)
+__all__ = ("db_helper", "Base", "TelegramClient")
 
 from .db_helper import db_helper
 from .base import Base
