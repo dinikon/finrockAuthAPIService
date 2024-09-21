@@ -14,8 +14,8 @@ from core.models import TelegramClient
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(TelegramClient.metadata.create_all)
+    # async with db_helper.engine.begin() as conn:
+    #     await conn.run_sync(TelegramClient.metadata.create_all)
     yield
     # shutdown
     print("dispose engine")
