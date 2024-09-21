@@ -6,7 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from core.config import settings
 
-from api import auth
+from api import router as api_router
 from core.models.db_helper import db_helper
 from core.models import TelegramClient
 
@@ -49,7 +49,9 @@ main_app.add_middleware(
 )
 
 
-main_app.include_router(auth.router, prefix=settings.api.prefix)
+main_app.include_router(
+    api_router,
+)
 
 
 if __name__ == "__main__":
