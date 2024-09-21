@@ -18,4 +18,4 @@ COPY ./app /finrockAuthAPI/
 EXPOSE 8000
 
 # Запускаем FastAPI приложение
-CMD ["python", "run_main.py"]
+CMD ["python", "run.py"]
