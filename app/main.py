@@ -11,16 +11,11 @@ from core.config import settings
 
 from api import router as api_router
 from core.models.db_helper import db_helper
-from core.models import TelegramClient
 
-
-# Настройка логирования
-console_handler = logging.StreamHandler()  # Обработчик для вывода логов в консоль
-console_handler.setFormatter(logging.Formatter(settings.logging.log_format))  # Используем формат из settings
 
 logging.basicConfig(
-    level=logging.DEBUG,  # Можно установить другой уровень логов, например INFO
-    handlers=[console_handler],  # Указываем, что логи выводятся в консоль
+    level=settings.logging.log_level,
+    format=settings.logging.log_format,
 )
 
 
