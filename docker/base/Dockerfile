@@ -18,4 +18,4 @@ COPY ./app /finrockAuthAPI/
 EXPOSE 8000
 
 # Запускаем FastAPI приложение
-CMD ["uvicorn", "main:main_app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "run_main.py"]
