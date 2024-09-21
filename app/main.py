@@ -7,12 +7,15 @@ from starlette.middleware.cors import CORSMiddleware
 from core.config import settings
 
 from api import auth
-from core.database import db_helper
+from core.models.db_helper import db_helper
+from core.models import TelegramClient
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
+    async with db_helper.engine.begin() as conn:
+        await conn.run_sync(TelegramClient.metadata.create_all)
     yield
     # shutdown
     print("dispose engine")
@@ -22,11 +25,12 @@ async def lifespan(app: FastAPI):
 main_app = FastAPI(
     lifespan=lifespan,
 )
-main_app.include_router(auth.router, prefix=settings.api.prefix)
+
 
 origins = [
     "http://localhost:5173",
 ]
+
 
 methods = [
     "DELETE",
@@ -35,6 +39,7 @@ methods = [
     "PUT",
 ]
 
+
 main_app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -42,6 +47,9 @@ main_app.add_middleware(
     allow_methods=methods,
     allow_headers=["*"],
 )
+
+
+main_app.include_router(auth.router, prefix=settings.api.prefix)
 
 
 if __name__ == "__main__":

@@ -8,7 +8,6 @@ def validate_telegram_auth(data: dict, bot_token: str) -> bool:
     calculated_hash = hmac.new(secret_key, check_string.encode(), hashlib.sha256).hexdigest()
     is_valid = calculated_hash == data['hash']
 
-    # Вывод данных в консоль
     if is_valid:
         print("Данные прошли валидацию и подлинны:", data)
     else:
