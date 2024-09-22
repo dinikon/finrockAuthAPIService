@@ -11,12 +11,12 @@ LOG_DEFAULT_FORMAT = (
 
 
 class RunConfig(BaseModel):
-    host: str = "127.0.0.1"
+    host: str = "0.0.0.0"
     port: int = 8000
 
 
 class GunicornConfig(BaseModel):
-    host: str = "127.0.0.1"
+    host: str = "0.0.0.0"
     port: int = 8000
     workers: int = 1
     timeout: int = 900
