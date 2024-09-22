@@ -53,6 +53,14 @@ class DatabaseConfig(BaseModel):
     }
 
 
+class JWTConfig(BaseModel):
+    access_token_secret: str = "PaoVY27UoeBtDaI06r7jJwrD8ECNhelhHZ_uKYZDpj4"
+    access_token_expire_minutes: int = 1
+
+    refresh_token_secret: str = "e5q3mcBlpZcKFMItewXzlDdZb6BzArSkhBrwYTtGemA"
+    refresh_token_expire_minutes: int = 1
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -65,6 +73,7 @@ class Settings(BaseSettings):
     logging: LoggingConfig = LoggingConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
+    jwt: JWTConfig = JWTConfig()
 
 
 settings = Settings()

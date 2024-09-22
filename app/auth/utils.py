@@ -1,5 +1,8 @@
 import hashlib
 import hmac
+from datetime import datetime, timedelta
+from jose import jwt
+from core.config import settings
 
 
 def validate_telegram_auth(data: dict, bot_token: str) -> bool:
@@ -12,11 +15,31 @@ def validate_telegram_auth(data: dict, bot_token: str) -> bool:
     ).hexdigest()
     is_valid = calculated_hash == data["hash"]
 
-    # if is_valid:
-    #     print("Данные прошли валидацию и подлинны:", data)
-    # else:
-    #     print("Ошибка валидации данных! Полученные данные:", data)
-    #     print("Calculated Hash:", calculated_hash)
-    #     print("Received Hash:", data['hash'])
-
     return is_valid
+
+
+async def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=settings.jwt.access_token_expire_minutes)
+
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(
+        to_encode,
+        settings.jwt.access_token_secret,
+        algorithm="HS256",
+    )
+    return encoded_jwt
+
+
+async def create_refresh_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=settings.jwt.refresh_token_expire_minutes)
+
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(
+        to_encode,
+        settings.jwt.refresh_token_secret,
+        algorithm="HS256",
+    )
+    return encoded_jwt
+

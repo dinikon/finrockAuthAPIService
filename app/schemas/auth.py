@@ -8,3 +8,8 @@ class TelegramAuthData(BaseModel):
     photo_url: str
     auth_date: int
     hash: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
