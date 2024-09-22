@@ -20,7 +20,9 @@ def validate_telegram_auth(data: dict, bot_token: str) -> bool:
 
 async def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=settings.jwt.access_token_expire_minutes)
+    expire = datetime.utcnow() + timedelta(
+        minutes=settings.jwt.access_token_expire_minutes
+    )
 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
@@ -33,7 +35,9 @@ async def create_access_token(data: dict):
 
 async def create_refresh_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=settings.jwt.refresh_token_expire_minutes)
+    expire = datetime.utcnow() + timedelta(
+        minutes=settings.jwt.refresh_token_expire_minutes
+    )
 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
@@ -42,4 +46,3 @@ async def create_refresh_token(data: dict):
         algorithm="HS256",
     )
     return encoded_jwt
-

@@ -17,9 +17,7 @@ router = APIRouter(
 
 
 @router.post("/login")
-async def auth(
-        response: Response,
-        data: TelegramAuthData):
+async def auth(response: Response, data: TelegramAuthData):
     data_dict = data.dict()
 
     log.info("Start authentication process for username: %s", data_dict.get("username"))
@@ -29,21 +27,31 @@ async def auth(
 
     # Логируем процесс валидации
     if validate_telegram_auth(
-            data_dict, "6743079497:AAE1ZY9QPKiDnZxufcoipXxVVWNQ-vTAPEQ"
+        data_dict, "6743079497:AAE1ZY9QPKiDnZxufcoipXxVVWNQ-vTAPEQ"
     ):
         log.info("Validation successful for username: %s", data_dict.get("username"))
 
         try:
             # Логируем процесс создания access token
-            access_token = await create_access_token(data={"username": data_dict["username"]})
-            log.debug("Access token generated for username: %s", data_dict.get("username"))
+            access_token = await create_access_token(
+                data={"username": data_dict["username"]}
+            )
+            log.debug(
+                "Access token generated for username: %s", data_dict.get("username")
+            )
 
             # Логируем процесс создания refresh token
-            refresh_token = await create_refresh_token(data={"username": data_dict["username"]})
-            log.debug("Refresh token generated for username: %s", data_dict.get("username"))
+            refresh_token = await create_refresh_token(
+                data={"username": data_dict["username"]}
+            )
+            log.debug(
+                "Refresh token generated for username: %s", data_dict.get("username")
+            )
 
             # Установка времени истечения cookie
-            expire_time = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt.refresh_token_expire_minutes)
+            expire_time = datetime.now(timezone.utc) + timedelta(
+                minutes=settings.jwt.refresh_token_expire_minutes
+            )
 
             # Логируем процесс установки cookies
             response.set_cookie(
@@ -54,8 +62,11 @@ async def auth(
                 secure=False,
                 expires=expire_time,
             )
-            log.info("Refresh token cookie set for username: %s with expiration time: %s",
-                     data_dict.get("username"), expire_time)
+            log.info(
+                "Refresh token cookie set for username: %s with expiration time: %s",
+                data_dict.get("username"),
+                expire_time,
+            )
 
             # Возвращаем access токен
             return Token(
@@ -64,8 +75,12 @@ async def auth(
             )
 
         except Exception as e:
-            log.error("Error occurred during token generation or cookie setting: %s", str(e))
-            raise HTTPException(status_code=500, detail="Internal server error during authentication")
+            log.error(
+                "Error occurred during token generation or cookie setting: %s", str(e)
+            )
+            raise HTTPException(
+                status_code=500, detail="Internal server error during authentication"
+            )
 
     else:
         log.warning("Validation failed for username: %s", data_dict.get("username"))
@@ -122,7 +137,9 @@ async def refresh(
         log.debug("New refresh token generated for username: %s", username)
 
         # Устанавливаем время истечения cookies
-        expire_time = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt.refresh_token_expire_minutes)
+        expire_time = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.jwt.refresh_token_expire_minutes
+        )
         log.info("Setting new refresh token cookie with expiration: %s", expire_time)
 
         # Логируем процесс установки cookies
@@ -142,8 +159,12 @@ async def refresh(
         )
 
     except Exception as e:
-        log.error("Error occurred during token generation or cookie setting: %s", str(e))
-        raise HTTPException(status_code=500, detail="Internal server error during token refresh")
+        log.error(
+            "Error occurred during token generation or cookie setting: %s", str(e)
+        )
+        raise HTTPException(
+            status_code=500, detail="Internal server error during token refresh"
+        )
 
 
 @router.post("/logout")
@@ -159,4 +180,6 @@ async def logout(response: Response):
 
     except Exception as e:
         log.error("Error during logout: %s", str(e))
-        raise HTTPException(status_code=500, detail="Internal server error during logout")
+        raise HTTPException(
+            status_code=500, detail="Internal server error during logout"
+        )
