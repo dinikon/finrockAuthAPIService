@@ -144,3 +144,19 @@ async def refresh(
     except Exception as e:
         log.error("Error occurred during token generation or cookie setting: %s", str(e))
         raise HTTPException(status_code=500, detail="Internal server error during token refresh")
+
+
+@router.post("/logout")
+async def logout(response: Response):
+    log.info("Received logout request")
+
+    try:
+        # Логируем удаление refresh token из cookies
+        response.delete_cookie("refresh_token")
+        log.info("Refresh token cookie deleted successfully")
+
+        return {"message": "Logout successfully"}
+
+    except Exception as e:
+        log.error("Error during logout: %s", str(e))
+        raise HTTPException(status_code=500, detail="Internal server error during logout")
